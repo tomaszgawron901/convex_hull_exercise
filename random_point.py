@@ -1,11 +1,15 @@
 import random
 
-# print(random.randint(3, 9))
 
-
-def random_point_rec(num, size=10):
+def random_point_rec(num, size=10, full_vertices=False):
     # generate unique num points that radom in [0, size]
     points = set({})
+    if full_vertices:
+        points.add((0, 0))
+        points.add((0, size))
+        points.add((size, 0))
+        points.add((size, size))
+
     while len(points) < num:
         points.add((random.randint(0, size), random.randint(0, size)))
     return points
@@ -47,7 +51,9 @@ if __name__ == "__main__":
 
     # random 10 files once run
     n = 4
-    for i in range(20):
+    for i in range(15):
+        # points = random_point_rec(n,n, full_vertices=True)
         points = random_point_cycle(n, n)
+        # points = random_point_parabolic(n, int(n**1.5))
         write_points(points, f"text_files/convex_in_{i}.txt")
         n *= 2

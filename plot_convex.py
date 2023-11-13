@@ -1,8 +1,4 @@
 import matplotlib.pyplot as plt
-import numpy as np
-
-# x = np.array([4, 4, 5, 7])
-# y = np.array([8, 12, 9.3, 8])
 
 
 def read_point_set(file):
@@ -24,9 +20,11 @@ def show_case(index):
     plt.scatter(x, y, c='#1f77b4')  # ff7f0e
     plt.plot(x_out, y_out, c='#ff7f0e')
     plt.show()
+    return
 
 
 if __name__ == "__main__":
-    #show_case(1)
-    for i in range(10):
-        show_case(i)
+    show_case(6)
+    # show_case(18)
+    # for i in range(10):
+    #    show_case(i)

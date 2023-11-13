@@ -46,7 +46,6 @@ void Mbc::init_mbc_upper()
 
 void Mbc::mbc_upper(vector<point> p)
 // marriage before conquest algorithm to find upper hull
-// p is already sorted
 {
     int n = p.size();
     if (n == 0)
@@ -102,7 +101,7 @@ void Mbc::mbc_upper(vector<point> p)
     vector<double> ans_x = two_d_linear(a, b, c, c0, c1, &flag);
     if (flag != 0)
     {
-
+        // debug
         printf("flag:%d\n", flag);
         printf("%lf %lf\n", ans_x[0], ans_x[1]);
         for (auto it : p)

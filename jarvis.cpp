@@ -11,9 +11,15 @@ Jarvis::Jarvis(int n)
 
 void Jarvis::do_jarvis()
 {
-    sort(p.begin(), p.end(), cmp);
+    // sort(p.begin(), p.end(), cmp);
+    point init_p = {inf, inf};
+    for (auto &it : p)
+    {
+        if (it.x < init_p.x || (it.x == init_p.x && it.y < init_p.y))
+            init_p = it;
+    }
     top = 0;
-    st[top++] = p[0];
+    st[top++] = init_p;
 
     // upper hull
     while (1)
