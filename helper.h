@@ -40,6 +40,8 @@ double dis(point a, point b);
 
 double clockwise_angle(point a, point b, point c);
 
+int get_left_most(vector<point> points);
+
 vector<point> top_sort(vector<pair<point, point>> line_vec);
 
 #endif

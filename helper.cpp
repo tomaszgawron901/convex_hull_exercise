@@ -47,11 +47,22 @@ double clockwise_angle(point a, point b, point c)
     const double Pi = acos(-1); // or use some π constant
     if (angle_acb > Pi)
         angle_acb -= 2 * Pi;
-    else if (angle_acb < -Pi)
+    else if (angle_acb <= -Pi)
         angle_acb += 2 * Pi;
 
     // angle_acb in [-pi...pi]
     return angle_acb;
+}
+
+int get_left_most(vector<point> points) {
+    int out = 0;
+    for (int i = 1; i < points.size(); i++)
+    {
+        if(points[i].x < points[out].x || (points[i].x < points[out].x && points[i].y < points[out].y)) {
+            out = i;
+        }
+    }
+    return out;
 }
 
 vector<point> top_sort(vector<pair<point, point>> line_vec)
