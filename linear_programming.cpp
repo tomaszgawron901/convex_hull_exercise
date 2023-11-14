@@ -27,7 +27,7 @@ When flag=2: Unbounded
         // a[i]*x <= b[i]
         if (a[i] == 0.0)
         {
-            if (b[i] > 0)
+            if (b[i] < 0)
             {
                 (*flag) = 1; // infeasible
                 break;
@@ -36,7 +36,6 @@ When flag=2: Unbounded
                 continue; // b[i] >= 0
         }
         double bound = b[i] / a[i];
-        // printf("bound: %lf\n", bound);
         if (a[i] > 0) // x <= bound
             max_bound = min(max_bound, bound);
         else // x >= bound
@@ -51,9 +50,9 @@ When flag=2: Unbounded
         return -1;
     }
     if (c > 0)
-        return c * min_bound;
+        return min_bound;
     else
-        return c * max_bound;
+        return max_bound;
 }
 
 vector<double> init_v_by_c0(double c0, double c1)
@@ -112,9 +111,7 @@ return the best (x0, x1) (if exist)
 
         if (a[i] * opt_v[0] + b[i] * opt_v[1] <= c[i])
             continue;
-        // printf("i=%d\n", i);
 
-        // printf("i:%d\n", i);
         //  do 1d linear programming on this line:
         //  x[1] = c[i]/b[i]-a[i]/b[i]*x[0]
         //  in MbC algorithm, b[i]=-1
@@ -127,16 +124,9 @@ return the best (x0, x1) (if exist)
             b_1d[j] = c[j] - b[j] * c[i] / b[i];
         }
         double c_1d = c0 - c1 * a[i] / b[i];
-        // double bias = c1 * c[i] / b[i];
-        // if (c_1d == 0) // meaningless, or it may cause bugs.
-        // {
-        //     printf("ZEROOOOOOOOOOOOOOOO!");
-        //     //continue;
-        // }
+
         int flag_1d = 0;
-        // printf("%lf, %lf, %lf\n", a_1d[0], b_1d[0], c_1d);
         double ans_1d = one_d_linear(a_1d, b_1d, c_1d, &flag_1d);
-        // printf("ans_id=%lf\n", ans_1d);
         if (flag_1d == 2) // unbounded
             continue;
         if (flag_1d == 1) // infeasible
@@ -146,16 +136,12 @@ return the best (x0, x1) (if exist)
         }
         is_unbounded = 0;
 
-        opt_v[0] = ans_1d / c_1d;
+        opt_v[0] = ans_1d;
         opt_v[1] = c[i] / b[i] - a[i] / b[i] * opt_v[0];
-        // printf("ans_1d, c_1d: %lf %lf\n", ans_1d,  c_1d);
 
         if ((*flag) != 1 && is_unbounded == 1)
             (*flag) = 2; // unbounded
     }
-    // printf("flag=%d\n", *flag);
-    // printf("a=%lf, b=%lf, min=%lf\n", opt_v[0], opt_v[1], c0 * opt_v[0] + c1 * opt_v[1]);
-    // puts("two_d_linear out!!");
     return opt_v;
 }
 

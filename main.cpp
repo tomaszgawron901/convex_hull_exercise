@@ -51,26 +51,17 @@ double test_alg_once(int index, string &alg, int times = 100)
     if (alg == "mbc")
     {
         Mbc mbc(input_point);
-        vector<pair<point, point>> full_convex_line;
+        vector<point> full_convex_line;
         for (int i = 0; i < times; i++)
         {
 
-            mbc.p = input_point;
+            mbc.points = input_point;
             auto start = chrono::high_resolution_clock::now();
             full_convex_line = mbc.mbc_full();
             auto end = chrono::high_resolution_clock::now();
             duration += end - start;
         }
-        // for (auto it : input_point)
-        // {
-        //     printf("%lf %lf\n", it.x, it.y);
-        // }
-        // for(auto it : full_convex_line)
-        // {
-        //     printf("%lf %lf, %lf %lf\n", it.first.x, it.first.y, it.second.x, it.second.y);
-        // }
-        // top_sort is just format, not necessary
-        output_point = top_sort(full_convex_line);
+        output_point = full_convex_line;
     }
     if (alg == "graham")
     {
