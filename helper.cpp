@@ -7,35 +7,40 @@ bool point::operator==(const point &other) const
     return x == other.x && y == other.y;
 }
 
+bool point::operator!=(const point &other) const
+{
+    return x != other.x || y != other.y;
+}
+
 size_t point_hash::operator()(const point &p) const
 {
     return std::hash<double>()(p.x) ^ std::hash<double>()(p.y);
 }
 
-int cmp(point a, point b)
+int cmp(const point &a, const point &b)
 // compare for sort
 {
     return a.x == b.x ? a.y < b.y : a.x < b.x;
 }
 
-int cmp_2(point a, point b)
+int cmp_2(const point &a, const point &b)
 // compare for sort, if a.x == b.x
 {
     return a.x == b.x ? a.y > b.y : a.x < b.x;
 }
 
-double dis(point a, point b)
+double dis(const point &a, const point &b)
 {
     return sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
 }
 
-double turn_test(point p1, point p2, point p3)
+double turn_test(const point &p1, const point &p2, const point &p3)
 // return: left (counter-clockwise): > 0
 {
     return p1.x * (p2.y - p3.y) + p2.x * (p3.y - p1.y) + p3.x * (p1.y - p2.y);
 }
 
-double clockwise_angle(point a, point b, point c)
+double clockwise_angle(const point &a, const point &b, const point &c)
 // angle between AB and BC in clockwise direction
 {
     //  atan2  return arctan y/x in [−pi , pi]
@@ -54,7 +59,17 @@ double clockwise_angle(point a, point b, point c)
     return angle_acb;
 }
 
-vector<point> top_sort(vector<pair<point, point>> line_vec)
+void flip_points(vector<point>::iterator begin, vector<point>::iterator end)
+{
+    for (auto it = begin; it < end; it++)
+    {
+        it->y = -(it->y);
+        it->x = -(it->x);
+    }
+    return;
+}
+
+vector<point> top_sort(const vector<pair<point, point>> &line_vec)
 {
     // transfer the line<point1, point2>, line<point2, point3>, ..., to:
     // point1, point2, ...

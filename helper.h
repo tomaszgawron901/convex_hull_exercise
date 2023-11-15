@@ -23,6 +23,7 @@ struct point
     point(double x, double y) : x(x), y(y) {}
 
     bool operator==(const point &other) const;
+    bool operator!=(const point &other) const;
 };
 
 struct point_hash // for unordered_map<point, something, point_hash>
@@ -30,16 +31,18 @@ struct point_hash // for unordered_map<point, something, point_hash>
     size_t operator()(const point &p) const;
 };
 
-int cmp(point a, point b);
+int cmp(const point &a, const point &b);
 
-int cmp_2(point a, point b);
+int cmp_2(const point &a, const point &b);
 
-double turn_test(point p1, point p2, point p3);
+double turn_test(const point &p1, const point &p2, const point &p3);
 
-double dis(point a, point b);
+double dis(const point &a, const point &b);
 
-double clockwise_angle(point a, point b, point c);
+double clockwise_angle(const point &a, const point &b, const point &c);
 
-vector<point> top_sort(vector<pair<point, point>> line_vec);
+vector<point> top_sort(const vector<pair<point, point>> &line_vec);
+
+void flip_points(vector<point>::iterator begin, vector<point>::iterator end);
 
 #endif

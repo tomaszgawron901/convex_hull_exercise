@@ -12,7 +12,8 @@ void Mbc::mbc_upper(vector<point> p)
 // marriage before conquest algorithm to find upper hull
 {
     int n = p.size();
-    if(n < 3) {
+    if (n < 3)
+    {
         sort(p.begin(), p.end(), cmp);
         for (auto &it : p)
         {
@@ -21,7 +22,8 @@ void Mbc::mbc_upper(vector<point> p)
         return;
     }
 
-    double mid_x = (p[0].x + p[1].x) / 2;  // this way there is always at lest one point smaller and one point larger then mid_x
+    // this way there is always at lest one point smaller and one point larger then mid_x
+    double mid_x = (p[0].x + p[1].x) / 2;
 
     /*
     find the bridge: transfer to 2d_linear programming:
@@ -72,14 +74,14 @@ void Mbc::mbc_upper(vector<point> p)
     vector<point> pl, pr;
     for (auto &it : p)
     {
-        if(it.x > right_point.x)
+        if (it.x > right_point.x)
         {
             pr.push_back(it);
         }
         else if (it.x < left_point.x)
         {
             pl.push_back(it);
-        }    
+        }
     }
     pl.push_back(left_point);
     pr.push_back(right_point);
@@ -93,27 +95,26 @@ vector<point> Mbc::mbc_full()
     // compute full convex of full_p.
     mbc_upper(points);
 
-    for (auto &it : points)
-    {
-        it.y = -it.y;
-        it.x = -it.x;
-    }
+    flip_points(points.begin(), points.end());
 
     int bottom_hull_start = convex_line.size();
     mbc_upper(points);
 
-    for (auto &it : points) // turn to original full_p
-    {
-        it.y = -it.y;
-        it.x = -it.x;
-    }
+    flip_points(points.begin(), points.end()); // turn to original full_p
+    // turn points on the lower hull to original space
+    flip_points(convex_line.begin() + bottom_hull_start, convex_line.end());
 
-    for (size_t i = bottom_hull_start; i < convex_line.size(); i++)
-    {
-        convex_line[i].y = -convex_line[i].y;
-        convex_line[i].x = -convex_line[i].x;
-    }
-    
 
+    // in some case, there are some same continous points in convex_line somehow.
+    // so, do unique. unique only delete continous same elements (keep the first one)
+    int n = unique(convex_line.begin(), convex_line.end()) - convex_line.begin(); // O(n)
+    convex_line.resize(n);
+    // and if there are vertical line in the right side of convec hull,
+    // convex_line may not include the last line somehow.
+    // so, add it if it is missing.
+    if (convex_line[0] != convex_line[convex_line.size() - 1])
+    {
+        convex_line.push_back(convex_line[0]);
+    }
     return convex_line;
 }
