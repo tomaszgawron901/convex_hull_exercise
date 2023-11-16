@@ -2,7 +2,7 @@
 
 using namespace std;
 
-double one_d_linear(const vector<double> &a, const vector<double> &b, double c, int *flag, int *index)
+double one_d_linear(const vector<double> &a, const vector<double> &b, double c, int *flag)
 /*
 unknown x, minimize c1*x, where:
 a[0]*x <= b[0],
@@ -19,10 +19,9 @@ When flag=2: Unbounded
         return 0.0;
     }
     (*flag) = 0;
-    (*index) = -1;
     int len = a.size();
     double min_bound = -inf, max_bound = inf;
-    int min_index, max_index = -1;
+    double ans = min_bound;
     for (int i = 0; i < len; i++)
     {
         // a[i]*x <= b[i]
@@ -38,21 +37,9 @@ When flag=2: Unbounded
         }
         double bound = b[i] / a[i];
         if (a[i] > 0) // x <= bound
-        {
-            if(max_bound > bound)
-            {
-                max_bound = bound;
-                max_index = i;
-            }
-        }
+            max_bound = min(max_bound, bound);
         else // x >= bound
-        {
-            if(min_bound < bound)
-            {
-                min_bound = bound;
-                min_index = i;
-            }
-        }
+            min_bound = max(min_bound, bound);
     }
 
     if ((*flag) == 1)
@@ -63,17 +50,9 @@ When flag=2: Unbounded
         return -1;
     }
     if (c > 0)
-    {
-        (*index) = min_index;
         return min_bound;
-    }
     else
-    {
-        (*index) = max_index;
         return max_bound;
-    }
-
-        
 }
 
 vector<double> init_v_by_c0(double c0, double c1)
@@ -99,7 +78,7 @@ void shuffle_vectors(vector<double> &a, vector<double> &b, vector<double> &c)
 }
 
 vector<double> two_d_linear(const vector<double> &a, const vector<double> &b,
-                            const vector<double> &c, double c0, double c1, int *flag, pair<int, int> *index)
+                            const vector<double> &c, double c0, double c1, int *flag)
 /*
 two_d_linear ONLY for MbC (marriage_before_conquest) algorithm.
 unknown x0, x1, minimize c0*x0+x1, where:
@@ -122,7 +101,6 @@ return the best (x0, x1) (if exist)
     // puts("two_d_linear in!!");
     vector<double> opt_v = {0, -inf}; // init_v_by_c0(c0, c1);
     (*flag) = 0;
-    (*index) = pair(-1, -1);
     int len = a.size();
     int is_unbounded = 1;
 
@@ -148,8 +126,7 @@ return the best (x0, x1) (if exist)
         double c_1d = c0 - c1 * a[i] / b[i];
 
         int flag_1d = 0;
-        int index_1d = -1;
-        double ans_1d = one_d_linear(a_1d, b_1d, c_1d, &flag_1d, &index_1d);
+        double ans_1d = one_d_linear(a_1d, b_1d, c_1d, &flag_1d);
         if (flag_1d == 2) // unbounded
             continue;
         if (flag_1d == 1) // infeasible
@@ -158,8 +135,6 @@ return the best (x0, x1) (if exist)
             break;
         }
         is_unbounded = 0;
-
-        (*index) = pair(i, index_1d);
 
         opt_v[0] = ans_1d;
         opt_v[1] = c[i] / b[i] - a[i] / b[i] * opt_v[0];
@@ -186,8 +161,7 @@ void test_1d()
             scanf("%lf %lf", &a[i], &b[i]);
         }
         int flag;
-        int index;
-        double ans = one_d_linear(a, b, c, &flag, &index);
+        double ans = one_d_linear(a, b, c, &flag);
         printf("flag: %d, ans: %lf\n", flag, ans);
     }
     fclose(stdin);
@@ -212,8 +186,7 @@ void test_2d()
             scanf("%lf %lf %lf", &a[i], &b[i], &c[i]);
         }
         int flag;
-        pair<int, int> index;
-        vector<double> ans = two_d_linear(a, b, c, c0, c1, &flag, &index);
+        vector<double> ans = two_d_linear(a, b, c, c0, c1, &flag);
         printf("flag: %d, ans: %lf %lf\n", flag, ans[0], ans[1]);
     }
     fclose(stdin);
