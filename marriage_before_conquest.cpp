@@ -44,8 +44,7 @@ void Mbc::mbc_upper(vector<point> p)
         c[i] = -p[i].y;
     }
 
-    pair<int, int> bridge;
-    vector<double> ans_x = two_d_linear(a, b, c, c0, c1, &flag, &bridge);
+    vector<double> ans_x = two_d_linear(a, b, c, c0, c1, &flag);
     if (flag != 0)
     {
         // debug
@@ -57,11 +56,18 @@ void Mbc::mbc_upper(vector<point> p)
         }
     }
 
-    point left_point = p[bridge.first];
-    point right_point = p[bridge.second];
-    if(left_point.x > right_point.x)
+    //  find 2 points on this line
+    //  if these are more than 2 points, only save most left and most right one
+    point left_point = {inf, 0}, right_point = {-inf, 0};
+    for (auto &it : p)
     {
-        swap(left_point, right_point);
+        if (abs(it.x * ans_x[0] + ans_x[1] - it.y) <= eps) // point on line
+        {
+            if (it.x < left_point.x)
+                left_point = it;
+            if (it.x > right_point.x)
+                right_point = it;
+        }
     }
 
     // delete points under the line, and do recursion
