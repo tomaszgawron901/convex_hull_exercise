@@ -51,9 +51,10 @@ if __name__ == "__main__":
 
     # random 10 files once run
     n = 4
-    for i in range(15):
-        # points = random_point_rec(n,n, full_vertices=True)
-        points = random_point_cycle(n, n)
-        # points = random_point_parabolic(n, int(n**1.5))
+    for i in range(18):
+        #points = random_point_rec(n,n, full_vertices=True)
+        #points = random_point_rec(n,n)
+        #points = random_point_cycle(n, n)
+        points = random_point_parabolic(n, int(n*3))
         write_points(points, f"text_files/convex_in_{i}.txt")
         n *= 2

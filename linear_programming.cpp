@@ -98,7 +98,6 @@ Algorithm:
 return the best (x0, x1) (if exist)
 */
 {
-    // puts("two_d_linear in!!");
     vector<double> opt_v = {0, -inf}; // init_v_by_c0(c0, c1);
     (*flag) = 0;
     int len = a.size();

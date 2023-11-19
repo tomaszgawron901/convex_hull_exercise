@@ -14,8 +14,8 @@
                 "graham.cpp",
                 "marriage_before_conquest.cpp",
                 //"mian.cpp",
+                "-O3",
                 "-o",
-                
                 "${fileDirname}\\obj\\${fileBasenameNoExtension}.exe"
             ],
             "options": {
