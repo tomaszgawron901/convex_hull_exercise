@@ -75,10 +75,30 @@ vector<double> init_v_by_c0(double c0, double c1)
 void shuffle_vectors(vector<double> &a, vector<double> &b, vector<double> &c)
 // shuffle constraints of 2D_LP
 {
+    /*
+    -- To shuffle an array a of n elements (indices 0..n-1):
+    for i from 0 to n−2 do
+     j ← random integer such that i ≤ j < n
+     exchange a[i] and a[j]
+    */
+    int n = a.size();
+    srand(static_cast<unsigned int>(time(nullptr)));
+    for (int i = 0; i < n - 1; i++)
+    {
+        // rand_index in [i,n)
+        int rand_index = rand() % (n - i) + i;
+        if (rand_index != i)
+        {
+            swap(a[i], a[rand_index]);
+            swap(b[i], b[rand_index]);
+            swap(c[i], c[rand_index]);
+        }
+    }
+    return;
 }
 
-vector<double> two_d_linear(const vector<double> &a, const vector<double> &b,
-                            const vector<double> &c, double c0, double c1, int *flag)
+vector<double> two_d_linear(vector<double> &a, vector<double> &b, vector<double> &c,
+                            double c0, double c1, int *flag)
 /*
 two_d_linear ONLY for MbC (marriage_before_conquest) algorithm.
 unknown x0, x1, minimize c0*x0+x1, where:
@@ -102,6 +122,7 @@ return the best (x0, x1) (if exist)
     (*flag) = 0;
     int len = a.size();
     int is_unbounded = 1;
+    shuffle_vectors(a, b, c);
 
     // when i=0, there is no constraints in 1D_LP
     for (int i = 0; i < len; i++)

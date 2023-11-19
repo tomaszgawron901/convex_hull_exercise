@@ -24,7 +24,6 @@ void Mbc::mbc_upper(vector<point> p)
 
     // this way there is always at lest one point smaller and one point larger then mid_x
     double mid_x = (p[0].x + p[1].x) / 2;
-
     /*
     find the bridge: transfer to 2d_linear programming:
     a, b is unknown, minimize x0*mid_x+x1, where:
@@ -48,7 +47,7 @@ void Mbc::mbc_upper(vector<point> p)
     if (flag != 0)
     {
         // debug
-        printf("flag:%d\n", flag);
+        printf("flag:%d, mid_x: %lf\n", flag, mid_x);
         printf("%lf %lf\n", ans_x[0], ans_x[1]);
         for (auto it : p)
         {
@@ -92,18 +91,18 @@ void Mbc::mbc_upper(vector<point> p)
 
 vector<point> Mbc::mbc_full()
 {
-    // compute full convex of full_p.
-    mbc_upper(points);
+
+    // compute full convex of full_points.
+    mbc_upper(unique_x_points(points));
 
     flip_points(points.begin(), points.end());
 
     int bottom_hull_start = convex_line.size();
-    mbc_upper(points);
+    mbc_upper(unique_x_points(points));
 
     flip_points(points.begin(), points.end()); // turn to original full_p
     // turn points on the lower hull to original space
     flip_points(convex_line.begin() + bottom_hull_start, convex_line.end());
-
 
     // in some case, there are some same continous points in convex_line somehow.
     // so, do unique. unique only delete continous same elements (keep the first one)

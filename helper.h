@@ -9,6 +9,7 @@
 #include <cmath>
 #include <vector>
 #include <chrono>
+#include <cstdlib>
 
 using namespace std;
 
@@ -47,5 +48,7 @@ double clockwise_angle(const point &a, const point &b, const point &c);
 vector<point> top_sort(const vector<pair<point, point>> &line_vec);
 
 void flip_points(vector<point>::iterator begin, vector<point>::iterator end);
+
+vector<point> unique_x_points(const vector<point> &p);
 
 #endif
