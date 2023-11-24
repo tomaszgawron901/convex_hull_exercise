@@ -28,6 +28,7 @@ struct point
 
     bool operator==(const point &other) const;
     bool operator!=(const point &other) const;
+    bool operator<(const point &other) const;
 };
 
 struct point_hash // for unordered_map<point, something, point_hash>

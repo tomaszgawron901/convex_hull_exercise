@@ -12,6 +12,11 @@ bool point::operator!=(const point &other) const
     return x != other.x || y != other.y;
 }
 
+bool point::operator<(const point &other) const
+{
+    return x < other.x || (x == other.x && y < other.y);
+}
+
 size_t point_hash::operator()(const point &p) const
 {
     return std::hash<double>()(p.x) ^ std::hash<double>()(p.y);

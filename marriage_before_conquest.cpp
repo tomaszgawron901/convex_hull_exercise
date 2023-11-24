@@ -8,17 +8,21 @@ Mbc::Mbc(vector<point> &p)
     convex_line = {};
 }
 
-void Mbc::mbc_upper(vector<point> p)
+void Mbc::mbc_upper(const vector<point> &p)
 // marriage before conquest algorithm to find upper hull
 {
     int n = p.size();
-    if (n < 3)
+    if (n == 0)
+        return;
+    if (n == 1)
     {
-        sort(p.begin(), p.end(), cmp);
-        for (auto &it : p)
-        {
-            convex_line.push_back(it);
-        }
+        convex_line.push_back(p[0]);
+        return;
+    }
+    if (n == 2)
+    {
+        convex_line.push_back(min(p[0], p[1]));
+        convex_line.push_back(max(p[0], p[1]));
         return;
     }
 
