@@ -14,6 +14,7 @@ void shuffle_vectors(vector<double> &a, vector<double> &b, vector<double> &c);
 vector<double> two_d_linear(vector<double> &a, vector<double> &b, vector<double> &c,
                             double c0, double c1, int *flag);
 
+vector<double> two_d_linear_point(const vector<point> &p, double c0, double c1, int *flag);
 void test_1d();
 
 #endif

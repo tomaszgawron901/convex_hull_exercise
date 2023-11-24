@@ -97,6 +97,58 @@ void shuffle_vectors(vector<double> &a, vector<double> &b, vector<double> &c)
     return;
 }
 
+vector<double> two_d_linear_point(const vector<point> &p, double c0, double c1, int *flag)
+// two_d_linear based on points in MbC algorithm
+// pass point instead of vector a, b, c can avoid copy
+{
+    vector<double> opt_v = {0, -inf}; // init_v_by_c0(c0, c1);
+    (*flag) = 0;
+    int len = p.size();
+    int is_unbounded = 1;
+    // p is const so we cannot do shuffle
+    // but for random data, no shuffle is ok
+    // shuffle_vectors(a, b, c);
+
+    for (int i = 0; i < len; i++)
+    {
+        // b[i] is always -1
+
+        if (-p[i].x * opt_v[0] - 1 * opt_v[1] <= -p[i].y)
+            continue;
+
+        //  do 1d linear programming on this line:
+        //  x[1] = c[i]/b[i]-a[i]/b[i]*x[0]
+        //  in MbC algorithm, b[i]=-1
+        vector<double> a_1d, b_1d;
+        a_1d.resize(i);
+        b_1d.resize(i);
+        for (int j = 0; j < i; j++)
+        {
+            a_1d[j] = p[i].x - p[j].x;
+            b_1d[j] = p[i].y - p[j].y;
+        }
+        double c_1d = c0 - c1 * p[i].x;
+
+        int flag_1d = 0;
+        double ans_1d = one_d_linear(a_1d, b_1d, c_1d, &flag_1d);
+        if (flag_1d == 2) // unbounded
+            continue;
+        if (flag_1d == 1) // infeasible
+        {
+            (*flag) = 1;
+            break;
+        }
+        is_unbounded = 0;
+
+        opt_v[0] = ans_1d;
+        opt_v[1] = p[i].y - p[i].x * opt_v[0];
+
+        if ((*flag) != 1 && is_unbounded == 1)
+            (*flag) = 2; // unbounded
+    }
+    return opt_v;
+}
+
 vector<double> two_d_linear(vector<double> &a, vector<double> &b, vector<double> &c,
                             double c0, double c1, int *flag)
 /*

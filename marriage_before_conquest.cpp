@@ -36,6 +36,9 @@ void Mbc::mbc_upper(const vector<point> &p)
     */
     double c0 = mid_x, c1 = 1;
     int flag;
+    /*
+    // two_d_linear_point() is faster, but can not shuffle_vectors()
+    // if want to shuffle_vectors(), run follow codes instead of two_d_linear_point()
     vector<double> a, b, c;
     a.resize(n);
     b.resize(n);
@@ -46,9 +49,11 @@ void Mbc::mbc_upper(const vector<point> &p)
         b[i] = -1;
         c[i] = -p[i].y;
     }
-
     vector<double> ans_x = two_d_linear(a, b, c, c0, c1, &flag);
-    if (flag != 0)
+    */
+    vector<double> ans_x = two_d_linear_point(p, c0, c1, &flag);
+
+        if (flag != 0)
     {
         // debug
         printf("flag:%d, mid_x: %lf\n", flag, mid_x);
