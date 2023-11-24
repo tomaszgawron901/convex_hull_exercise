@@ -50,11 +50,11 @@ def write_points(points, file):
 if __name__ == "__main__":
 
     # random 10 files once run
-    n = 4
-    for i in range(18):
-        #points = random_point_rec(n,n, full_vertices=True)
-        #points = random_point_rec(n,n)
-        #points = random_point_cycle(n, n)
-        points = random_point_parabolic(n, int(n*3))
+    n = 1024
+    for i in range(7):
+        #points = random_point_rec(n,n, full_vertices=True) # h=4
+        #points = random_point_rec(n,n) # h=logn
+        points = random_point_cycle(n, n) # h=n^(1/3)
+        # points = random_point_parabolic(n, int(n*3)) # h=n
         write_points(points, f"text_files/convex_in_{i}.txt")
         n *= 2

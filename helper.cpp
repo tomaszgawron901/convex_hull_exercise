@@ -104,22 +104,24 @@ vector<point> top_sort(const vector<pair<point, point>> &line_vec)
 
 vector<point> unique_x_points(const vector<point> &p)
 // only save the most top point when there are many points in a vertical line
-// and it's O(n), but with a big constant
+// it's O(n), but with a big constant when input size become larger
 {
-    // note: all points in p are in integer coordinate
-    unordered_map<long long, long long> mp;
-    for (auto &point : p)
+    // all points in p are in integer coordinate
+    // value of mp is the index of p
+    unordered_map<int, int> mp;
+    mp.reserve(p.size());
+    for (int i = 0; i < p.size(); i++)
     {
-        long long x = static_cast<long long>(point.x);
-        long long y = static_cast<long long>(point.y);
-        if (mp.find(x) == mp.end() || mp[x] < y)
-            mp[x] = y;
+        int x = p[i].x;
+        if (mp.find(x) == mp.end() || p[mp[x]].y < p[i].y)
+            mp[x] = i;
     }
-    vector<point> ans(mp.size());
-    int index = 0;
+
+    vector<point> ans;
+    ans.reserve(mp.size());
     for (auto &it : mp)
     {
-        ans[index++] = {double(it.first), double(it.second)};
+        ans.emplace_back(p[it.second]);
     }
     return ans;
 }
