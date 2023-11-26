@@ -11,7 +11,6 @@ a[1]*x <= b[1],
 a(n-1)*x <= b[n-1].
 When flag=0: Feasible, the minimize value is return value
 When flag=1: Infeasible
-When flag=2: Unbounded
 */
 {
     if (c == 0)
@@ -42,13 +41,12 @@ When flag=2: Unbounded
             min_bound = max(min_bound, bound);
     }
 
+    if (max_bound < min_bound)
+        (*flag) = 1; // infeasible
+
     if ((*flag) == 1)
         return -1;
-    if (max_bound < min_bound)
-    {
-        (*flag) = 2;
-        return -1;
-    }
+
     if (c > 0)
         return min_bound;
     else
@@ -131,8 +129,7 @@ vector<double> two_d_linear_point(const vector<point> &p, double c0, double c1, 
 
         int flag_1d = 0;
         double ans_1d = one_d_linear(a_1d, b_1d, c_1d, &flag_1d);
-        if (flag_1d == 2) // unbounded
-            continue;
+
         if (flag_1d == 1) // infeasible
         {
             (*flag) = 1;

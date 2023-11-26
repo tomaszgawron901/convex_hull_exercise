@@ -26,8 +26,10 @@ void Mbc::mbc_upper(const vector<point> &p)
         return;
     }
 
-    // this way there is always at lest one point smaller and one point larger then mid_x
-    double mid_x = (p[0].x + p[1].x) / 2;
+    // test cases contain points with integer coordinates
+    // we don't want any point to lie on the pivot, that's why adding 0.5
+    double mid_x = p[0].x + 0.5;
+    
     /*
     find the bridge: transfer to 2d_linear programming:
     a, b is unknown, minimize x0*mid_x+x1, where:
@@ -102,12 +104,12 @@ vector<point> Mbc::mbc_full()
 {
 
     // compute full convex of full_points.
-    mbc_upper(unique_x_points(points));
+    mbc_upper(points);
 
     flip_points(points.begin(), points.end());
 
     int bottom_hull_start = convex_line.size();
-    mbc_upper(unique_x_points(points));
+    mbc_upper(points);
 
     flip_points(points.begin(), points.end()); // turn to original full_p
     // turn points on the lower hull to original space
