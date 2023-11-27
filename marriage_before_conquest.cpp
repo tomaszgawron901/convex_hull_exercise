@@ -8,7 +8,7 @@ Mbc::Mbc(vector<point> &p)
     convex_line = {};
 }
 
-void Mbc::mbc_upper(const vector<point> &p)
+void Mbc::mbc_upper(vector<point> &p)
 // marriage before conquest algorithm to find upper hull
 {
     int n = p.size();
@@ -27,105 +27,55 @@ void Mbc::mbc_upper(const vector<point> &p)
     }
 
     // test cases contain points with integer coordinates
-    // we don't want any point to lie on the pivot, that's why adding 0.5
-    double mid_x = p[0].x + 0.5;
+    // we don't want any point to lie on the pivot, that's why adding 0.1
+    double mid_x = (p[0].x + p[1].x) / 2 + 0.1;
     
-    /*
-    find the bridge: transfer to 2d_linear programming:
-    a, b is unknown, minimize x0*mid_x+x1, where:
-    ( x0*p[i].x + x1 >= p[i].y ) ==> ( -p[i].x*x0 - x1 <= -p[i].y )
-    for all point p[i]
-    */
-    double c0 = mid_x, c1 = 1;
     int flag;
-    /*
-    // two_d_linear_point() is faster, but can not shuffle_vectors()
-    // if want to shuffle_vectors(), run follow codes instead of two_d_linear_point()
-    vector<double> a, b, c;
-    a.resize(n);
-    b.resize(n);
-    c.resize(n);
-    for (int i = 0; i < n; i++)
-    {
-        a[i] = -p[i].x;
-        b[i] = -1;
-        c[i] = -p[i].y;
-    }
-    vector<double> ans_x = two_d_linear(a, b, c, c0, c1, &flag);
-    */
-    vector<double> ans_x = two_d_linear_point(p, c0, c1, &flag);
+    vector<point> bridge = find_bridge(p, mid_x, &flag);
 
     if (flag != 0)
     {
         // debug
         printf("flag:%d, mid_x: %lf\n", flag, mid_x);
-        printf("%lf %lf\n", ans_x[0], ans_x[1]);
         for (auto it : p)
         {
             printf("points: %lf, %lf\n", it.x, it.y);
         }
     }
 
-
     vector<point> pl, pr;
-    if(ans_x[0] == -inf) //  vertical line
+    if(bridge.size() == 1) // bridge is a vertical line
     {
-        point single_bridge = {-numeric_limits<double>::infinity(), -numeric_limits<double>::infinity()};
         for (auto &it : p)
         {
-            if (it.x > single_bridge.x || (it.x == single_bridge.x && it.y > single_bridge.y)) // point on line
-            {
-                single_bridge = it;
-            }
-        }
-        for (auto &it : p)
-        {
-            if (it.x < single_bridge.x)
+            if (it.x < bridge[0].x)
             {
                 pl.push_back(it);
             }
         }
         // important! put current pivot at the end so it is not selected as a pivot again in the next recurrence execution
-        pl.push_back(single_bridge); 
+        pl.push_back(bridge[0]); 
     }
-    else
+    else if(bridge.size() == 2)
     {
-        //  find 2 points on this line
-        //  if these are more than 2 points, only save most left and most right one
-        point left_point = {numeric_limits<double>::infinity(), 0};
-        point right_point = {-numeric_limits<double>::infinity(), 0};
-        for (auto &it : p)
+        if(bridge[0].x > bridge[1].x)
         {
-            if (abs(it.x * ans_x[0] + ans_x[1] - it.y) <= eps) // point on line
-            {
-                if (it.x < left_point.x)
-                    left_point = it;
-                if (it.x > right_point.x)
-                    right_point = it;
-            }
+            swap(bridge[0], bridge[1]);
         }
 
-        if(left_point.x == numeric_limits<double>::infinity() || left_point.x == -numeric_limits<double>::infinity())
-        {
-            // debug
-            printf("left right not found");
-        }
-
-        // delete points under the line, and do recursion
         for (auto &it : p)
         {
-            if (it.x > right_point.x)
+            if (it.x > bridge[1].x)
             {
                 pr.push_back(it);
             }
-            else if (it.x < left_point.x)
+            else if (it.x < bridge[0].x)
             {
                 pl.push_back(it);
             }
         }
-        pl.push_back(left_point);
-        pr.push_back(right_point);
-
+        pl.push_back(bridge[0]);
+        pr.push_back(bridge[1]);
     }
     mbc_upper(pl);
     mbc_upper(pr);
@@ -148,10 +98,6 @@ vector<point> Mbc::mbc_full()
     // turn points on the lower hull to original space
     flip_points(convex_line.begin() + bottom_hull_start, convex_line.end());
 
-    // in some case, there are some same continous points in convex_line somehow.
-    // so, do unique. unique only delete continous same elements (keep the first one)
-    int n = unique(convex_line.begin(), convex_line.end()) - convex_line.begin(); // O(n)
-    convex_line.resize(n);
     // and if there are vertical line in the right side of convec hull,
     // convex_line may not include the last line somehow.
     // so, add it if it is missing.
