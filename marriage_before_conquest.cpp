@@ -55,7 +55,7 @@ void Mbc::mbc_upper(const vector<point> &p)
     */
     vector<double> ans_x = two_d_linear_point(p, c0, c1, &flag);
 
-        if (flag != 0)
+    if (flag != 0)
     {
         // debug
         printf("flag:%d, mid_x: %lf\n", flag, mid_x);
@@ -66,37 +66,70 @@ void Mbc::mbc_upper(const vector<point> &p)
         }
     }
 
-    //  find 2 points on this line
-    //  if these are more than 2 points, only save most left and most right one
-    point left_point = {inf, 0}, right_point = {-inf, 0};
-    for (auto &it : p)
-    {
-        if (abs(it.x * ans_x[0] + ans_x[1] - it.y) <= eps) // point on line
-        {
-            if (it.x < left_point.x)
-                left_point = it;
-            if (it.x > right_point.x)
-                right_point = it;
-        }
-    }
 
-    // delete points under the line, and do recursion
     vector<point> pl, pr;
-    for (auto &it : p)
+    if(ans_x[0] == -inf) //  vertical line
     {
-        if (it.x > right_point.x)
+        point single_bridge = {-numeric_limits<double>::infinity(), -numeric_limits<double>::infinity()};
+        for (auto &it : p)
         {
-            pr.push_back(it);
+            if (it.x > single_bridge.x || (it.x == single_bridge.x && it.y > single_bridge.y)) // point on line
+            {
+                single_bridge = it;
+            }
         }
-        else if (it.x < left_point.x)
+        for (auto &it : p)
         {
-            pl.push_back(it);
+            if (it.x < single_bridge.x)
+            {
+                pl.push_back(it);
+            }
         }
+        // important! put current pivot at the end so it is not selected as a pivot again in the next recurrence execution
+        pl.push_back(single_bridge); 
     }
-    pl.push_back(left_point);
-    pr.push_back(right_point);
+    else
+    {
+        //  find 2 points on this line
+        //  if these are more than 2 points, only save most left and most right one
+        point left_point = {numeric_limits<double>::infinity(), 0};
+        point right_point = {-numeric_limits<double>::infinity(), 0};
+        for (auto &it : p)
+        {
+            if (abs(it.x * ans_x[0] + ans_x[1] - it.y) <= eps) // point on line
+            {
+                if (it.x < left_point.x)
+                    left_point = it;
+                if (it.x > right_point.x)
+                    right_point = it;
+            }
+        }
+
+        if(left_point.x == numeric_limits<double>::infinity() || left_point.x == -numeric_limits<double>::infinity())
+        {
+            // debug
+            printf("left right not found");
+        }
+
+        // delete points under the line, and do recursion
+        for (auto &it : p)
+        {
+            if (it.x > right_point.x)
+            {
+                pr.push_back(it);
+            }
+            else if (it.x < left_point.x)
+            {
+                pl.push_back(it);
+            }
+        }
+        pl.push_back(left_point);
+        pr.push_back(right_point);
+
+    }
     mbc_upper(pl);
     mbc_upper(pr);
+
     return;
 }
 
