@@ -28,7 +28,7 @@ void Mbc::mbc_upper(vector<point> &p)
 
     // test cases contain points with integer coordinates
     // we don't want any point to lie on the pivot, that's why adding 0.1
-    double mid_x = (p[0].x + p[1].x) / 2 + 0.1;
+    long double mid_x = (p[0].x + p[1].x) / 2 + 0.1;
     
     int flag;
     vector<point> bridge = find_bridge(p, mid_x, &flag);

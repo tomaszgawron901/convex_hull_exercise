@@ -2,7 +2,7 @@
 
 using namespace std;
 
-double one_d_linear(const vector<double> &a, const vector<double> &b, double c, int *flag, int *index)
+long double one_d_linear(const vector<long double> &a, const vector<long double> &b, long double c, int *flag, int *index)
 /*
 unknown x, minimize c1*x, where:
 a[0]*x <= b[0],
@@ -20,9 +20,9 @@ When flag=1: Infeasible
     (*flag) = 0;
     (*index) = -1;
     int len = a.size();
-    double min_bound = -inf, max_bound = inf;
+    long double min_bound = -inf, max_bound = inf;
     int min_index = -1, max_index = -1;
-    double ans = min_bound;
+    long double ans = min_bound;
     for (int i = 0; i < len; i++)
     {
         // a[i]*x <= b[i]
@@ -36,7 +36,7 @@ When flag=1: Infeasible
             else
                 continue; // b[i] >= 0
         }
-        double bound = b[i] / a[i];
+        long double bound = b[i] / a[i];
         if (a[i] > 0) // x <= bound
         {
             if(max_bound > bound)
@@ -73,13 +73,13 @@ When flag=1: Infeasible
     }
 }
 
-vector<point> find_bridge(vector<point> &p, double pivot, int *flag)
+vector<point> find_bridge(vector<point> &p, long double pivot, int *flag)
 // two_d_linear based on points in MbC algorithm
 // pass point instead of vector a, b, c can avoid copy
 {
     random_shuffle(p.begin(), p.end());
 
-    vector<double> opt_v = {0, -inf};
+    vector<long double> opt_v = {0, -inf};
     (*flag) = 0;
     pair<int, int> index = pair(-1, -1);
     int len = p.size();
@@ -98,7 +98,7 @@ vector<point> find_bridge(vector<point> &p, double pivot, int *flag)
         //  do 1d linear programming on this line:
         //  x[1] = c[i]/b[i]-a[i]/b[i]*x[0]
         //  in MbC algorithm, b[i]=-1
-        vector<double> a_1d, b_1d;
+        vector<long double> a_1d, b_1d;
         a_1d.resize(i);
         b_1d.resize(i);
         for (int j = 0; j < i; j++)
@@ -106,11 +106,11 @@ vector<point> find_bridge(vector<point> &p, double pivot, int *flag)
             a_1d[j] = p[i].x - p[j].x;
             b_1d[j] = p[i].y - p[j].y;
         }
-        double c_1d = pivot - p[i].x;
+        long double c_1d = pivot - p[i].x;
 
         int flag_1d = 0;
         int index_1d = -1;
-        double ans_1d = one_d_linear(a_1d, b_1d, c_1d, &flag_1d, &index_1d);
+        long double ans_1d = one_d_linear(a_1d, b_1d, c_1d, &flag_1d, &index_1d);
 
         if (flag_1d == 1) // infeasible
         {
