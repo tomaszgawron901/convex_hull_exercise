@@ -109,11 +109,10 @@ vector<double> two_d_linear_point(const vector<point> &p, double c0, double c1, 
     // but for random data, no shuffle is ok
     // shuffle_vectors(a, b, c);
 
-    for (int i = 0; i < len; i++)
+    // when i=0, there is no bound, need not to compute
+    for (int i = 1; i < len; i++)
     {
-        // b[i] is always -1
-
-        if (-p[i].x * opt_v[0] - 1 * opt_v[1] <= -p[i].y)
+        if (p[i].x * opt_v[0] + opt_v[1] >= p[i].y)
             continue;
 
         //  do 1d linear programming on this line:
@@ -128,11 +127,13 @@ vector<double> two_d_linear_point(const vector<point> &p, double c0, double c1, 
             b_1d[j] = p[i].y - p[j].y;
         }
         double c_1d = c0 - c1 * p[i].x;
-
         int flag_1d = 0;
+
         double ans_1d = one_d_linear(a_1d, b_1d, c_1d, &flag_1d);
         if (flag_1d == 2) // unbounded
+        {
             continue;
+        }
         if (flag_1d == 1) // infeasible
         {
             (*flag) = 1;
@@ -195,8 +196,7 @@ return the best (x0, x1) (if exist)
             a_1d[j] = (a[j] - b[j] * a[i] / b[i]);
             b_1d[j] = c[j] - b[j] * c[i] / b[i];
         }
-        double c_1d = c0 - c1 * a[i] / b[i];
-
+        double c_1d = c0 - c1 * a[i] / b[i]; //c0 = mid_x, c1 = 1
         int flag_1d = 0;
         double ans_1d = one_d_linear(a_1d, b_1d, c_1d, &flag_1d);
         if (flag_1d == 2) // unbounded

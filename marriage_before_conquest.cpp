@@ -27,7 +27,8 @@ void Mbc::mbc_upper(const vector<point> &p)
     }
 
     // this way there is always at lest one point smaller and one point larger then mid_x
-    double mid_x = (p[0].x + p[1].x) / 2;
+    // and also avoid point(s) on the mid_x line
+    double mid_x = (p[0].x + p[1].x) / 2 + 0.1;
     /*
     find the bridge: transfer to 2d_linear programming:
     a, b is unknown, minimize x0*mid_x+x1, where:
@@ -36,6 +37,7 @@ void Mbc::mbc_upper(const vector<point> &p)
     */
     double c0 = mid_x, c1 = 1;
     int flag;
+
     /*
     // two_d_linear_point() is faster, but can not shuffle_vectors()
     // if want to shuffle_vectors(), run follow codes instead of two_d_linear_point()
@@ -53,7 +55,7 @@ void Mbc::mbc_upper(const vector<point> &p)
     */
     vector<double> ans_x = two_d_linear_point(p, c0, c1, &flag);
 
-        if (flag != 0)
+    if (flag != 0)
     {
         // debug
         printf("flag:%d, mid_x: %lf\n", flag, mid_x);
@@ -63,9 +65,8 @@ void Mbc::mbc_upper(const vector<point> &p)
             printf("points: %lf, %lf\n", it.x, it.y);
         }
     }
-
-    //  find 2 points on this line
-    //  if these are more than 2 points, only save most left and most right one
+    //   find 2 points on this line
+    //   if these are more than 2 points, only save most left and most right one
     point left_point = {inf, 0}, right_point = {-inf, 0};
     for (auto &it : p)
     {
@@ -77,8 +78,7 @@ void Mbc::mbc_upper(const vector<point> &p)
                 right_point = it;
         }
     }
-
-    // delete points under the line, and do recursion
+    //  delete points under the line, and do recursion
     vector<point> pl, pr;
     for (auto &it : p)
     {
