@@ -73,23 +73,6 @@ When flag=1: Infeasible
     }
 }
 
-vector<double> init_v_by_c0(double c0, double c1)
-// return v(x0, x1) of 2D_LP, when minimize c0*x0+c1*x1 and
-{
-    vector<double> x{0.0, 0.0};
-    if (c0 > 0)
-        x[0] = -inf;
-    else
-        x[0] = inf;
-
-    if (c1 > 0)
-        x[1] = -inf;
-    else
-        x[1] = inf;
-
-    return x;
-}
-
 vector<point> find_bridge(vector<point> &p, double pivot, int *flag)
 // two_d_linear based on points in MbC algorithm
 // pass point instead of vector a, b, c can avoid copy

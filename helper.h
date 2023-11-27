@@ -50,6 +50,4 @@ vector<point> top_sort(const vector<pair<point, point>> &line_vec);
 
 void flip_points(vector<point>::iterator begin, vector<point>::iterator end);
 
-vector<point> unique_x_points(const vector<point> &p);
-
 #endif
