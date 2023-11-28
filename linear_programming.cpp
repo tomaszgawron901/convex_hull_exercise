@@ -84,15 +84,10 @@ vector<point> find_bridge(vector<point> &p, long double pivot, int *flag)
     pair<int, int> index = pair(-1, -1);
     int len = p.size();
     int is_unbounded = 1;
-    // p is const so we cannot do shuffle
-    // but for random data, no shuffle is ok
-    // shuffle_vectors(a, b, c);
 
     for (int i = 0; i < len; i++)
     {
-        // b[i] is always -1
-
-        if (-p[i].x * opt_v[0] - 1 * opt_v[1] <= -p[i].y)
+        if (p[i].x * opt_v[0] + opt_v[1] >= p[i].y)
             continue;
 
         //  do 1d linear programming on this line:

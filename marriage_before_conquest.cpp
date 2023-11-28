@@ -42,7 +42,6 @@ void Mbc::mbc_upper(vector<point> &p)
             printf("points: %Lf, %Lf\n", it.x, it.y);
         }
     }
-
     vector<point> pl, pr;
     if(bridge.size() == 1) // bridge is a vertical line
     {
