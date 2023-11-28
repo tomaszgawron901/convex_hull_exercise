@@ -129,7 +129,9 @@ vector<point> find_bridge(vector<point> &p, long double pivot, int *flag)
     }
 
     vector<point> bridge;
-    bridge.push_back(p[index.first]);
+    if(index.first >= 0) {
+        bridge.push_back(p[index.first]);
+    }
     if(index.second >= 0) {
         bridge.push_back(p[index.second]);
     }

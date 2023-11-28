@@ -36,10 +36,10 @@ void Mbc::mbc_upper(vector<point> &p)
     if (flag != 0)
     {
         // debug
-        printf("flag:%d, mid_x: %lf\n", flag, mid_x);
+        printf("flag:%d, mid_x: %Lf\n", flag, mid_x);
         for (auto it : p)
         {
-            printf("points: %lf, %lf\n", it.x, it.y);
+            printf("points: %Lf, %Lf\n", it.x, it.y);
         }
     }
 
@@ -76,6 +76,11 @@ void Mbc::mbc_upper(vector<point> &p)
         }
         pl.push_back(bridge[0]);
         pr.push_back(bridge[1]);
+    }
+    else if(bridge.size() == 0)
+    {
+        // debug
+        printf("Bridge not found");
     }
     mbc_upper(pl);
     mbc_upper(pr);

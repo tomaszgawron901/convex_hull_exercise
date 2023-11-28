@@ -16,7 +16,7 @@ using namespace std;
 // the inf should be larger than any number in convex computation.
 // there are test case that y=x^2, and data size is 4e6
 // so the inf should be at least bigger than 1.6e13
-const long double inf = 1e16;
+const long double inf = 1e18;
 const long double eps = 1e-9;
 const long double pi = acos(-1);
 
